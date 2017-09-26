@@ -16,6 +16,16 @@ class AwxBase(object):
         """Return resource class object."""
         return get_resource(self.name)
 
+    @property
+    def organization(self):
+        """Return organization class instance."""
+        return AwxOrganization()
+
+    @property
+    def inventory(self):
+        """Return inventory class instance."""
+        return AwxInventory()
+
 
 class AwxAdHoc(AwxBase):
     __resource_name__ = 'ad_hoc'
@@ -58,13 +68,31 @@ class AwxHost(AwxBase):
         """Return list of hosts."""
         return self.resource.list()
 
-    def create(self):
+    def create(self, name, inventory):
         """Create a host."""
-        raise NotImplementedError
+        # check if inventory exists
+        try:
+            _inv = self.inventory.get(inventory)
+        except Exception:
+            raise Exception('Inventory %s not found.' % inventory)
 
-    def delete(self):
+        self.resource.create(
+            name=name,
+            inventory=_inv['id']
+        )
+
+    def delete(self, name, inventory):
         """Delete a host."""
-        raise NotImplementedError
+        # check if inventory exists
+        try:
+            _inv = self.inventory.get(inventory)
+        except Exception:
+            raise Exception('Inventory %s not found.' % inventory)
+
+        self.resource.delete(
+            name=name,
+            inventory=_inv['id']
+        )
 
 
 class AwxInventory(AwxBase):
@@ -74,11 +102,6 @@ class AwxInventory(AwxBase):
     def __init__(self):
         """Constructor."""
         super(AwxInventory, self).__init__()
-
-    @property
-    def organization(self):
-        """Return organization class instance."""
-        return AwxOrganization()
 
     @property
     def inventories(self):
@@ -98,7 +121,7 @@ class AwxInventory(AwxBase):
         :type variables: dict
         """
         # check if organization exists
-        _org = self.organization.get_organization(organization)
+        _org = self.organization.get(organization)
 
         # quit if organization not found
         if not _org:
@@ -192,7 +215,7 @@ class AwxOrganization(AwxBase):
         """Return list of organizations."""
         return self.resource.list()
 
-    def get_organization(self, name):
+    def get(self, name):
         """Get organization.
 
         :param name: Organization name.
