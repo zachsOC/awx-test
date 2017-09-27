@@ -459,3 +459,148 @@ class AwxWorkflowJob(AwxBase):
 
     def __init__(self):
         super(AwxWorkflowJob, self).__init__()
+
+
+class Awx(object):
+    """Awx class."""
+
+    def __init__(self):
+        """Constructor."""
+        self._ad_hoc = AwxAdHoc()
+        self._config = AwxConfig()
+        self._credential = AwxCredential()
+        self._group = AwxGroup()
+        self._host = AwxHost()
+        self._inventory = AwxInventory()
+        self._inventory_script = AwxInventoryScript()
+        self._job = AwxJob()
+        self._job_template = AwxJobTemplate()
+        self._label = AwxLabel()
+        self._node = AwxNode()
+        self._notification_template = AwxNotificationTemplate()
+        self._organization = AwxOrganization()
+        self._permission = AwxPermission()
+        self._project = AwxProject()
+        self._role = AwxRole()
+        self._schedule = AwxSchedule()
+        self._setting = AwxSetting()
+        self._team = AwxTeam()
+        self._user = AwxUser()
+        self._version = AwxVersion()
+        self._workflow = AwxWorkflow()
+        self._workflow_job = AwxWorkflowJob()
+
+    @property
+    def ad_hoc(self):
+        """Return ad hoc instance."""
+        return self._ad_hoc
+
+    @property
+    def config(self):
+        """Return config instance."""
+        return self._config
+
+    @property
+    def credential(self):
+        """Return credential instance."""
+        return self._credential
+
+    @property
+    def group(self):
+        """Return group instance."""
+        return self._group
+
+    @property
+    def host(self):
+        """Return host instance."""
+        return self._host
+
+    @property
+    def inventory(self):
+        """Return inventory instance."""
+        return self._inventory
+
+    @property
+    def inventory_script(self):
+        """Return inventory script instance."""
+        return self._inventory_script
+
+    @property
+    def job(self):
+        """Return job instance."""
+        return self._job
+
+    @property
+    def job_template(self):
+        """Return job template instance."""
+        return self._job_template
+
+    @property
+    def label(self):
+        """Return label instance."""
+        return self._label
+
+    @property
+    def node(self):
+        """Return node instance."""
+        return self._node
+
+    @property
+    def notification_template(self):
+        """Return notification template instance."""
+        return self._notification_template
+
+    @property
+    def organization(self):
+        """Return organization instance."""
+        return self._organization
+
+    @property
+    def permission(self):
+        """Return permission instance."""
+        return self._permission
+
+    @property
+    def project(self):
+        """Return project instance."""
+        return self._project
+
+    @property
+    def role(self):
+        """Return role instance."""
+        return self._role
+
+    @property
+    def schedule(self):
+        """Return schedule instance."""
+        return self._schedule
+
+    @property
+    def setting(self):
+        """Return setting instance."""
+        return self._setting
+
+    @property
+    def team(self):
+        """Return team instance."""
+        return self._team
+
+    @property
+    def user(self):
+        """Return user instance."""
+        return self._user
+
+    @property
+    def version(self):
+        """Return version instance."""
+        return self._version
+
+    @property
+    def workflow(self):
+        """Return workflow instance."""
+        return self._workflow
+
+    @property
+    def workflow_job(self):
+        """Return workflow job instance."""
+        return self._workflow_job

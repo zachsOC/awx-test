@@ -11,12 +11,9 @@ the following actions with Ansible AWX:
     6. Delete inventory
     7. Delete organization
 """
-from awx.awx import AwxAdHoc
-from awx.awx import AwxCredential
-from awx.awx import AwxHost
-from awx.awx import AwxInventory
-from awx.awx import AwxOrganization
 from time import sleep
+
+from awx.awx import Awx
 
 # global variables
 CREDENTIAL = 'Demo Credential'
@@ -25,27 +22,23 @@ INVENTORY = 'uc01'
 ORGANIZATION = 'uc01'
 
 # create awx objects
-awx_adhoc = AwxAdHoc()
-awx_credential = AwxCredential()
-awx_host = AwxHost()
-awx_inventory = AwxInventory()
-awx_organization = AwxOrganization()
+awx = Awx()
 
 # create organization
-awx_organization.create(ORGANIZATION)
+awx.organization.create(ORGANIZATION)
 
 # create inventory
-awx_inventory.create(INVENTORY, ORGANIZATION)
+awx.inventory.create(INVENTORY, ORGANIZATION)
 
 # create host
-awx_host.create(
+awx.host.create(
     HOST,
     INVENTORY,
     dict(ansible_connection='local')
 )
 
 # run ad hoc command (ping host)
-awx_adhoc.launch(
+awx.ad_hoc.launch(
     'run',
     'ping',
     INVENTORY,
@@ -55,10 +48,10 @@ awx_adhoc.launch(
 sleep(20)
 
 # delete host
-awx_host.delete(HOST, INVENTORY)
+awx.host.delete(HOST, INVENTORY)
 
 # delete inventory
-awx_inventory.delete(INVENTORY)
+awx.inventory.delete(INVENTORY)
 
 # delete organization
-awx_organization.delete(ORGANIZATION)
+awx.organization.delete(ORGANIZATION)
