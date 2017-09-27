@@ -1,6 +1,12 @@
 """Awx evaluation module."""
+import json
+
+import os
 from tower_cli import get_resource
 from tower_cli.exceptions import Found, NotFound
+
+
+# TODO: Add in additional parameters that are optional for all methods.
 
 
 class AwxBase(object):
@@ -26,12 +32,51 @@ class AwxBase(object):
         """Return inventory class instance."""
         return AwxInventory()
 
+    @property
+    def credential(self):
+        """Return credential class instance."""
+        return AwxCredential()
+
 
 class AwxAdHoc(AwxBase):
+    """Awx ad hoc class."""
     __resource_name__ = 'ad_hoc'
 
     def __init__(self):
+        """Constructor."""
         super(AwxAdHoc, self).__init__()
+
+    @property
+    def ad_hocs(self):
+        """Return list of ad hocs."""
+        return self.resource.list()
+
+    def launch(self, job_type, module, inventory, credential):
+        """Launch a ad hoc command.
+
+        :param job_type: Job type field.
+        :type job_type: str
+        :param module: Module name.
+        :type module: str
+        :param inventory: Inventory field.
+        :type inventory: str
+        :param credential: Credential field.
+        :type credential: str
+        :return: Launch data
+        :rtype: dict
+        """
+        # get credential object
+        _credential = self.credential.get(credential)
+
+        # get inventory object
+        _inventory = self.inventory.get(inventory)
+
+        return self.resource.launch(
+            job_type=job_type,
+            module_name=module,
+            inventory=_inventory['id'],
+            credential=_credential['id']
+        )
 
 
 class AwxConfig(AwxBase):
@@ -42,10 +87,101 @@ class AwxConfig(AwxBase):
 
 
 class AwxCredential(AwxBase):
+    """Awx credential class."""
     __resource_name__ = 'credential'
 
     def __init__(self):
+        """Constructor."""
         super(AwxCredential, self).__init__()
+
+    @property
+    def credentials(self):
+        """Return list of credentials."""
+        return self.resource.list()
+
+    def create(self, name, kind, organization, **kwargs):
+        """Create a credential entry.
+
+        :param name: Credential name.
+        :type name: str
+        :param kind: Credential type.
+        :type kind: str
+        :param organization: Organization name.
+        :type organization: str
+        :param kwargs: key=value data for optional arguments.
+        :type dict
+        """
+        supported_kinds = ['ssh']
+
+        # quit if kind not supported
+        if kind not in supported_kinds:
+            raise Exception('Kind %s is invalid.' % kind)
+
+        # check if organization exists
+        _org = self.organization.get(organization)
+
+        # quit if organization not found
+        if not _org:
+            raise Exception('Organization %s not found.' % organization)
+
+        # call method for credential support
+        getattr(self, '_create_%s_kind' % kind)(
+            name,
+            kind,
+            _org,
+            kwargs
+        )
+
+    def _create_ssh_kind(self, name, kind, organization, kwargs):
+        """Create a SSH credential entry.
+
+        :param name: Credential name.
+        :type name: str
+        :param kind: Credential type.
+        :type kind: str
+        :param organization: Organization name.
+        :type organization: str
+        :param kwargs: key=value data for optional arguments.
+        :type dict
+        """
+        key = 'ssh_key_data'
+
+        # quit if required key not defined
+        if key not in kwargs:
+            raise Exception('Kwargs requires %s.' % key)
+
+        # check if ssh private key exists
+        if not os.path.exists(kwargs['ssh_key_data']):
+            raise Exception('SSH private key %s not located.' % key)
+
+        # load ssh private key
+        with open(kwargs[key], 'r') as fh:
+            key_content = fh.read()
+
+        # create credential entry
+        self.resource.create(
+            name=name,
+            kind=kind,
+            organization=organization['id'],
+            ssh_key_data=key_content
+        )
+
+    def delete(self, name, kind):
+        """Delete a credential entry."""
+        self.resource.delete(name=name, kind=kind)
+
+    def get(self, name):
+        """Get credential.
+
+        :param name: Credential name.
+        :type name: str
+        :return: Credential object.
+        :type dict
+        """
+        try:
+            return self.resource.get(name=name)
+        except NotFound as ex:
+            raise Exception(ex.message)
 
 
 class AwxGroup(AwxBase):
@@ -68,7 +204,7 @@ class AwxHost(AwxBase):
         """Return list of hosts."""
         return self.resource.list()
 
-    def create(self, name, inventory):
+    def create(self, name, inventory, variables=None):
         """Create a host."""
         # check if inventory exists
         try:
@@ -78,7 +214,8 @@ class AwxHost(AwxBase):
 
         self.resource.create(
             name=name,
-            inventory=_inv['id']
+            inventory=_inv['id'],
+            variables=json.dumps(variables)
         )
 
     def delete(self, name, inventory):
@@ -214,6 +351,31 @@ class AwxOrganization(AwxBase):
     def organizations(self):
         """Return list of organizations."""
         return self.resource.list()
+
+    def create(self, name, description=None):
+        """Create an organization.
+
+        :param name: Organization name.
+        :type name: str
+        :param description: Organization description.
+        :type description: str
+        """
+        try:
+            self.resource.create(
+                name=name,
+                description=description,
+                fail_on_found=True
+            )
+        except Found as ex:
+            raise Exception(ex.message)
+
+    def delete(self, name):
+        """Delete an organization.
+
+        :param name: Organization name.
+        :type name: str
+        """
+        self.resource.delete(name=name)
 
     def get(self, name):
         """Get organization.
