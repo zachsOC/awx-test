@@ -3,6 +3,7 @@ import json
 
 import os
 from tower_cli import get_resource
+from tower_cli.conf import settings
 from tower_cli.exceptions import Found, NotFound
 
 
@@ -607,8 +608,16 @@ class AwxWorkflowJob(AwxBase):
 class Awx(object):
     """Awx class."""
 
-    def __init__(self):
-        """Constructor."""
+    def __init__(self, host=None, username=None, password=None):
+        """Constructor.
+
+        :param host: Ansible AWX host URL.
+        :type host: str
+        :param username: AWX username.
+        :type username: str
+        :param password: AWX password.
+        :type password: str
+        """
         self._ad_hoc = AwxAdHoc()
         self._config = AwxConfig()
         self._credential = AwxCredential()
@@ -632,6 +641,24 @@ class Awx(object):
         self._version = AwxVersion()
         self._workflow = AwxWorkflow()
         self._workflow_job = AwxWorkflowJob()
+
+        # set runtime parameters, this will override ones defined by file
+        self.runtime_settings('host', host)
+        self.runtime_settings('username', username)
+        self.runtime_settings('password', password)
+        self.runtime_settings('verify_ssl', 'False')
+
+    @staticmethod
+    def runtime_settings(key, value):
+        """Set run time settings.
+
+        :param key: Key name.
+        :type key: str
+        :param value: Key value.
+        :type value: str
+        """
+        if value:
+            settings.set_or_reset_runtime_param(key, value)
 
     @property
     def ad_hoc(self):
