@@ -99,23 +99,19 @@ class AwxCredential(AwxBase):
         """Return list of credentials."""
         return self.resource.list()
 
-    def create(self, name, kind, organization, **kwargs):
-        """Create a credential entry.
+    def create_ssh_credential(self, name, organization, ssh_key_file):
+        """Create a SSH credential entry.
 
         :param name: Credential name.
         :type name: str
-        :param kind: Credential type.
-        :type kind: str
         :param organization: Organization name.
         :type organization: str
-        :param kwargs: key=value data for optional arguments.
-        :type dict
+        :param ssh_key_file: SSH private key file path.
+        :type ssh_key_file: str
         """
-        supported_kinds = ['ssh']
-
-        # quit if kind not supported
-        if kind not in supported_kinds:
-            raise Exception('Kind %s is invalid.' % kind)
+        # quit if ssh private key file path does not exist
+        if not os.path.exists(ssh_key_file):
+            raise Exception('SSH private key %s not found.' % ssh_key_file)
 
         # check if organization exists
         _org = self.organization.get(organization)
@@ -124,45 +120,15 @@ class AwxCredential(AwxBase):
         if not _org:
             raise Exception('Organization %s not found.' % organization)
 
-        # call method for credential support
-        getattr(self, '_create_%s_kind' % kind)(
-            name,
-            kind,
-            _org,
-            kwargs
-        )
-
-    def _create_ssh_kind(self, name, kind, organization, kwargs):
-        """Create a SSH credential entry.
-
-        :param name: Credential name.
-        :type name: str
-        :param kind: Credential type.
-        :type kind: str
-        :param organization: Organization name.
-        :type organization: str
-        :param kwargs: key=value data for optional arguments.
-        :type dict
-        """
-        key = 'ssh_key_data'
-
-        # quit if required key not defined
-        if key not in kwargs:
-            raise Exception('Kwargs requires %s.' % key)
-
-        # check if ssh private key exists
-        if not os.path.exists(kwargs['ssh_key_data']):
-            raise Exception('SSH private key %s not located.' % key)
-
         # load ssh private key
-        with open(kwargs[key], 'r') as fh:
+        with open(ssh_key_file, 'r') as fh:
             key_content = fh.read()
 
         # create credential entry
         self.resource.create(
             name=name,
-            kind=kind,
-            organization=organization['id'],
+            kind='ssh',
+            organization=_org['id'],
             ssh_key_data=key_content
         )
 
