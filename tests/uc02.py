@@ -8,7 +8,7 @@ the following actions with Ansible AWX:
 """
 from pprint import pprint
 
-from awx.awx import Awx
+from awx import Awx
 
 # create awx objects
 awx = Awx()

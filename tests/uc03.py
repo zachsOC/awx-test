@@ -13,12 +13,13 @@ the following actions with Ansible AWX:
 from pprint import pprint
 from time import sleep
 
-from awx.awx import Awx
+from awx import Awx
 
 
 def list_projects():
     for project in awx.project.projects['results']:
         pprint(dict(project), indent=4)
+
 
 # create awx object
 awx = Awx()

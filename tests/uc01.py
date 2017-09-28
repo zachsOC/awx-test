@@ -13,7 +13,7 @@ the following actions with Ansible AWX:
 """
 from time import sleep
 
-from awx.awx import Awx
+from awx import Awx
 
 # global variables
 CREDENTIAL = 'Demo Credential'
