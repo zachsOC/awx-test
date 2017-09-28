@@ -37,7 +37,7 @@ awx.project.create_scm_project(
 list_projects()
 
 # delay
-sleep(5)
+sleep(15)
 
 # delete scm project
 awx.project.delete('demo01')
@@ -53,7 +53,7 @@ awx.project.create_manual_project(
 list_projects()
 
 # delay
-sleep(5)
+sleep(15)
 
 # delete manual project
 awx.project.delete('demo02')
