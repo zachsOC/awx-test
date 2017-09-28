@@ -23,21 +23,6 @@ class AwxBase(object):
         """Return resource class object."""
         return get_resource(self.name)
 
-    @property
-    def organization(self):
-        """Return organization class instance."""
-        return AwxOrganization()
-
-    @property
-    def inventory(self):
-        """Return inventory class instance."""
-        return AwxInventory()
-
-    @property
-    def credential(self):
-        """Return credential class instance."""
-        return AwxCredential()
-
 
 class AwxAdHoc(AwxBase):
     """Awx ad hoc class."""
@@ -46,6 +31,18 @@ class AwxAdHoc(AwxBase):
     def __init__(self):
         """Constructor."""
         super(AwxAdHoc, self).__init__()
+        self._credential = AwxCredential()
+        self._inventory = AwxInventory()
+
+    @property
+    def credential(self):
+        """Return credential instance."""
+        return self._credential
+
+    @property
+    def inventory(self):
+        """Return inventory instance."""
+        return self._inventory
 
     @property
     def ad_hocs(self):
@@ -94,6 +91,12 @@ class AwxCredential(AwxBase):
     def __init__(self):
         """Constructor."""
         super(AwxCredential, self).__init__()
+        self._organization = AwxOrganization()
+
+    @property
+    def organization(self):
+        """Return organization instance."""
+        return self._organization
 
     @property
     def credentials(self):
@@ -165,6 +168,12 @@ class AwxHost(AwxBase):
     def __init__(self):
         """Constructor."""
         super(AwxHost, self).__init__()
+        self._inventory = AwxInventory()
+
+    @property
+    def inventory(self):
+        """Return inventory instance."""
+        return self._inventory
 
     @property
     def hosts(self):
@@ -206,6 +215,12 @@ class AwxInventory(AwxBase):
     def __init__(self):
         """Constructor."""
         super(AwxInventory, self).__init__()
+        self._organization = AwxOrganization()
+
+    @property
+    def organization(self):
+        """Return organization instance."""
+        return self._organization
 
     @property
     def inventories(self):
@@ -373,6 +388,13 @@ class AwxProject(AwxBase):
         """Constructor."""
         super(AwxProject, self).__init__()
         self._scm_types = ['manual', 'git', 'hg', 'svn']
+
+        self._organization = AwxOrganization()
+
+    @property
+    def organization(self):
+        """Return organization instance."""
+        return self._organization
 
     @property
     def scm_types(self):
