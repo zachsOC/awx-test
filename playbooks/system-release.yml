@@ -1,0 +1,13 @@
+---
+- name: System release for Linux systems
+  hosts: "{{ hosts | default('all') }}"
+  gather_facts: false
+
+  tasks:
+    - name: Get system release
+      shell: "cat /etc/system-release"
+      register: sys_info
+
+    - name: Print system release
+      debug:
+        msg: "{{ sys_info.stdout }}"
