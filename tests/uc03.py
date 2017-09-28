@@ -10,8 +10,9 @@ the following actions with Ansible AWX:
     5. List projects.
     6. Delete manual project.
 """
-from time import sleep
 from pprint import pprint
+from time import sleep
+
 from awx.awx import Awx
 
 
