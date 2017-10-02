@@ -1,4 +1,6 @@
 """Awx ad hoc helper module."""
+from tower_cli.exceptions import NotFound
+
 from .credential import AwxCredential
 from .inventory import AwxInventory
 from ..base import AwxBase
@@ -32,7 +34,20 @@ class AwxAdHoc(AwxBase):
         """Return list of ad hocs."""
         return self.resource.list()
 
-    def launch(self, job_type, module, inventory, credential):
+    def cancel(self):
+        """Cancel a running ad hoc job."""
+        raise NotImplementedError
+
+    def relaunch(self):
+        """Relaunch an existing ad hoc job."""
+        raise NotImplementedError
+
+    def wait(self, job_id):
+        """Wait for a running ad hoc job to complete."""
+        raise NotImplementedError
+
+    def launch(self, job_type, module, inventory, credential,
+               module_args=None):
         """Launch a ad hoc command.
 
         :param job_type: Job type field.
@@ -43,6 +58,8 @@ class AwxAdHoc(AwxBase):
         :type inventory: str
         :param credential: Credential field.
         :type credential: str
+        :param module_args: Module arguments
+        :type module_args: str
         :return: Launch data
         :rtype: dict
         """
@@ -56,5 +73,33 @@ class AwxAdHoc(AwxBase):
             job_type=job_type,
             module_name=module,
             inventory=_inventory['id'],
-            credential=_credential['id']
+            credential=_credential['id'],
+            module_args=module_args
         )
+
+    def get(self, adhoc_id):
+        """Get ad hoc.
+
+        :param adhoc_id: Ad hoc job id.
+        :type adhoc_id: int
+        """
+        try:
+            return self.resource.get(adhoc_id)
+        except NotFound as ex:
+            raise Exception(ex.message)
+
+    def status(self, adhoc_id):
+        """Get ad hoc job status.
+
+        :param adhoc_id: Ad hoc job id.
+        :type adhoc_id: int
+        """
+        return self.resource.status(adhoc_id)
+
+    def stdout(self, adhoc_id):
+        """Get ad hoc job status.
+
+        :param adhoc_id: Ad hoc job id.
+        :type adhoc_id: int
+        """
+        return self.resource.stdout(adhoc_id)
