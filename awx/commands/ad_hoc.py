@@ -77,29 +77,29 @@ class AwxAdHoc(AwxBase):
             module_args=module_args
         )
 
-    def get(self, adhoc_id):
+    def get(self, job_id):
         """Get ad hoc.
 
-        :param adhoc_id: Ad hoc job id.
-        :type adhoc_id: int
+        :param job_id: Ad hoc job id.
+        :type job_id: int
         """
         try:
-            return self.resource.get(adhoc_id)
+            return self.resource.get(job_id)
         except NotFound as ex:
             raise Exception(ex.message)
 
-    def status(self, adhoc_id):
+    def status(self, job_id):
         """Get ad hoc job status.
 
-        :param adhoc_id: Ad hoc job id.
-        :type adhoc_id: int
+        :param job_id: Ad hoc job id.
+        :type job_id: int
         """
-        return self.resource.status(adhoc_id)
+        return self.resource.status(job_id)
 
-    def stdout(self, adhoc_id):
+    def stdout(self, job_id):
         """Get ad hoc job status.
 
-        :param adhoc_id: Ad hoc job id.
-        :type adhoc_id: int
+        :param job_id: Ad hoc job id.
+        :type job_id: int
         """
-        return self.resource.stdout(adhoc_id)
+        return self.resource.stdout(job_id)
