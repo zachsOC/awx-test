@@ -20,6 +20,18 @@ required commands it may need.
 
 ## Usage
 
+It is recommended that you configure your tower_cli.cfg file with your
+authentication details for accessing your AWX instance.
+
+```bash
+$ vi /etc/tower/tower_cli.cfg
+
+host: http://localhost
+username: admin
+password: password
+verify_ssl: False
+```
+
 Here are some examples on how to use the Python class wrapping tower-cli
 library.
 
