@@ -75,6 +75,25 @@ class AwxOrganization(AwxBase):
         except Found as ex:
             raise Exception(ex.message)
 
+    def associate_admin(self, name, organization):
+        """Associate a user with the organization with admin privilege.
+
+        :param name: Username.
+        :type name: str
+        :param organization: Organizaton name.
+        :type organization: str
+        """
+        # get organization
+        organization = self.get(organization)
+
+        # get user
+        user = self.user.get(name)
+
+        self.resource.associate_admin(
+            user=user['id'],
+            organization=organization['id']
+        )
+
     def disassociate(self, organization, name):
         """Disassociate a user with the team
 
