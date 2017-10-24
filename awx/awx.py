@@ -31,6 +31,8 @@ from .commands.workflow_job import AwxWorkflowJob
 class Awx(LoggerMixin):
     """Awx class."""
 
+    __tower_cli_cfg__ = '/etc/tower/tower_cli.cfg'
+
     def __init__(self, host=None, username=None, password=None, verbose=1):
         """Constructor.
 
@@ -69,10 +71,21 @@ class Awx(LoggerMixin):
         self._workflow = AwxWorkflow()
         self._workflow_job = AwxWorkflowJob()
 
+        # load awx credentials into memory
+        if host and username and password:
+            self._awx_host = host
+            self._awx_username = username
+            self._awx_password = password
+        else:
+            with open(self.__tower_cli_cfg__, 'r') as fh:
+                for item in fh.readlines():
+                    val = item.split(':', 1)
+                    setattr(self, '_awx_%s' % val[0], val[1].strip())
+
         # set runtime parameters, this will override ones defined by file
-        self.runtime_settings('host', host)
-        self.runtime_settings('username', username)
-        self.runtime_settings('password', password)
+        self.runtime_settings('host', self._awx_host)
+        self.runtime_settings('username', self._awx_username)
+        self.runtime_settings('password', self._awx_password)
         self.runtime_settings('verify_ssl', 'False')
 
     @staticmethod

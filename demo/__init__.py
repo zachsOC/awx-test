@@ -8,8 +8,7 @@ class Run(object):
 
     __organization__ = 'Carbon'
 
-    def __init__(self, input_config, tower_config):
-        self.tower_config = tower_config
+    def __init__(self, input_config):
         self.hosts = input_config['provision']
         self.orchestrate = input_config['orchestrate']
         self.rid = uuid.uuid4().hex[:4]
@@ -17,11 +16,7 @@ class Run(object):
         self.inventory = 'inventory_%s' % self.rid
         self.project = 'project_%s' % self.rid
 
-        self.awx = Awx(
-            self.tower_config['host'],
-            self.tower_config['username'],
-            self.tower_config['password']
-        )
+        self.awx = Awx()
 
     @property
     def organization(self):
