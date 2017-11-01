@@ -72,7 +72,8 @@ class Run(object):
 
             # create project
             try:
-                project = item['scm']['url'].split('/')[-1].split('.')[0]
+                # project = item['scm']['url'].split('/')[-1].split('.')[0]
+                project = "project_%s" % self.rid
 
                 self.awx.project.create_scm_project(
                     name=project,
@@ -122,7 +123,7 @@ class Run(object):
                 output = self.awx.job.monitor(
                     results['id'],
                     interval=1,
-                    timeout=300
+                    timeout=7200
                 )
                 self.awx.logger.debug(output)
 
