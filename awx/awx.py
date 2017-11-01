@@ -67,6 +67,8 @@ class Awx(LoggerMixin):
                         setattr(self, '_awx_%s' % val[0], val[1].strip())
                     break
 
+        self.logger.info('........ %s' % self._awx_host)
+
         self._ad_hoc = AwxAdHoc()
         self._config = AwxConfig()
         self._credential = AwxCredential()
