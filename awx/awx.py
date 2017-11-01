@@ -1,4 +1,5 @@
 """Awx helper module."""
+import os
 from tower_cli.conf import settings
 
 from . import __name__ as __awx_name__
@@ -31,7 +32,10 @@ from .commands.workflow_job import AwxWorkflowJob
 class Awx(LoggerMixin):
     """Awx class."""
 
-    __tower_cli_cfg__ = '/etc/tower/tower_cli.cfg'
+    __tower_cli_cfgs__ = [
+        '/etc/tower/tower_cli.cfg',
+        '~/.tower_cli.cfg'
+    ]
 
     def __init__(self, host=None, username=None, password=None, verbose=1):
         """Constructor.
@@ -53,10 +57,15 @@ class Awx(LoggerMixin):
             self._awx_username = username
             self._awx_password = password
         else:
-            with open(self.__tower_cli_cfg__, 'r') as fh:
-                for item in fh.readlines():
-                    val = item.split(':', 1)
-                    setattr(self, '_awx_%s' % val[0], val[1].strip())
+            for file_name in self.__tower_cli_cfgs__:
+                if not os.path.isfile(file_name):
+                    continue
+
+                with open(file_name, 'r') as fh:
+                    for item in fh.readlines():
+                        val = item.split(':', 1)
+                        setattr(self, '_awx_%s' % val[0], val[1].strip())
+                    break
 
         self._ad_hoc = AwxAdHoc()
         self._config = AwxConfig()
