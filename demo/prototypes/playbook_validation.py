@@ -44,7 +44,6 @@ import uuid
 from logging import getLogger
 from time import sleep
 from urlparse import urljoin
-
 import requests
 import yaml
 
@@ -62,8 +61,6 @@ INVENTORY_PREFIX = 'inv_'
 PROJECT_PREFIX = 'proj_'
 JOB_TEMPLATE_PREFIX = 'job_'
 HOST = '<machine_to_test>'
-TOWER_USER = 'carbon-user'
-TOWER_PASSWORD = 'carbon-user'
 TOWER_URL = 'http://localhost'
 
 # playbook and variables passed by the user
@@ -87,33 +84,6 @@ svars = dict(
 # PLAYBOOK = 'playbooks/system-release.yml'
 # svars = {}
 
-
-def get_playbook_project(awx, url, user, password, playbook_name):
-    # function that searches all playbooks and returns the project
-    # that contains the playbook if exists.
-
-    # get all projects
-    all_projects = awx.project.projects
-    all_playbooks = []
-
-    # get a dictionary of projects and playbooks
-    project_playbooks = {}
-
-    for proj in all_projects["results"]:
-        playbook_path = proj["related"]["playbooks"]
-        full_url = urljoin(url, playbook_path)
-        r = requests.get(full_url, auth=(user, password))
-        all_playbooks.extend(r.json())
-        project_playbooks[proj["name"]] = r.json()
-
-    if playbook_name not in all_playbooks:
-        return None
-    else:
-        for project in project_playbooks:
-            if playbook_name in project_playbooks[project]:
-                return project
-
-
 # variable to track if the project needs to be deleted
 del_project = False
 
@@ -126,12 +96,11 @@ job_template = JOB_TEMPLATE_PREFIX + scenario_guid
 credential = CREDENTIAL_PREFIX + scenario_guid
 
 # create awx object as carbon-user
-awx_user = Awx(username="carbon-user", password="carbon-user")
+awx_user = Awx()
 
 # query to see if project exists
-found_project = get_playbook_project(awx_user, TOWER_URL,
-                                     TOWER_USER, TOWER_PASSWORD,
-                                     PLAYBOOK)
+found_project = awx_user.project.get_playbook_project(PLAYBOOK)
+
 if found_project:
     project = awx_user.project.get(found_project)
 else:
