@@ -6,4 +6,4 @@
   - name: write hostname using jinja2
     ansible.builtin.template:
        src: templates/test.j2
-       dest: /tmp/hostname
+       dest: /home/ec2-user/hostname
