@@ -1,6 +1,6 @@
 ---
 - name: Install and start apache web server
-  hosts: "{{ hosts | default('all') }}"
+  hosts: web
   gather_facts: False
 
   tasks:
