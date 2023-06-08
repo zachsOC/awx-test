@@ -1,0 +1,10 @@
+  - name: Install apache
+    package:
+      name: nginx
+      state: latest
+    become: True
+
+  - name: Start apache service
+    systemd:
+      state: started
+      name: nginx

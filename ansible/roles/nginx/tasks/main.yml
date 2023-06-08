@@ -1,0 +1,12 @@
+---
+- name: Import the correct config for QA
+  import_tasks: qa.yml
+  when: 
+    - "'web' in group_names"
+    - "'qa' in group_names"
+
+- name: Import the correct config for PROD
+  import_tasks: prod.yml
+  when: 
+    - "'web' in group_names"
+    - "'prod' in group_names"      
