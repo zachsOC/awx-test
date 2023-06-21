@@ -1,6 +1,11 @@
 - name: Copy the script
-  copy: src= install-newrelic-infra.sh dest=/root/ mode=0755
   become: yes
+  ansible.builtin.copy:
+    src: install-newrelic-infra.sh
+    dest: /root/
+    owner: root
+    group: wheel
+    mode: '0755'  
 
 - name: Install newrelic-infra agent
   ansible.builtin.shell: /root/install-newrelic-infra.sh
