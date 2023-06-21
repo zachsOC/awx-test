@@ -1,4 +1,5 @@
 - name: Install newrelic-infra agent
-  ansible.builtin.shell: files/install-newrelic-infra.sh
+  ansible.builtin.shell: install-newrelic-infra.sh
   args:
     executable: /bin/bash
+  become: yes  
