@@ -1,5 +1,16 @@
+- name: Copy the script
+  copy: src= install-newrelic-infra.sh dest=/root/ mode=0755
+  become: yes
+
 - name: Install newrelic-infra agent
-  ansible.builtin.shell: echo "zac"
+  ansible.builtin.shell: /root/install-newrelic-infra.sh
   args:
     executable: /bin/bash
   become: yes  
+
+ - name: Remove script
+  ansible.builtin.file:
+    path: /root/install-newrelic-infra.sh
+    state: absent
+  become: yes  
+ 
