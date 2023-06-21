@@ -22,5 +22,5 @@
 - name: Set newrelic key
   lineinfile:
     path: /etc/newrelic-infra.yml
-    regexp: '^license_key: '
+    regexp: '^license_key'
     line: 'license_key: test'
