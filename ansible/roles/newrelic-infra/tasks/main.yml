@@ -8,7 +8,7 @@
     executable: /bin/bash
   become: yes  
 
- - name: Remove script
+- name: Remove script
   ansible.builtin.file:
     path: /root/install-newrelic-infra.sh
     state: absent
