@@ -23,4 +23,4 @@
   lineinfile:
     path: /etc/newrelic-infra.yml
     regexp: '^license_key: '
-    line: license_key: test
+    line: 'license_key: test'
