@@ -4,7 +4,4 @@
   roles:
     # Common
     - nginx
-    - role: newrelic.newrelic-infra
-      vars:
-        nrinfragent_config:
-          license_key: 12345    
+    - newrelic-infra
