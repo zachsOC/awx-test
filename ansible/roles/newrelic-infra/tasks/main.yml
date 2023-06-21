@@ -19,8 +19,5 @@
     state: absent
   become: yes  
 
-- name: Set newrelic key
-  lineinfile:
-    path: /etc/newrelic-infra.yml
-    regexp: '^12345'
-    line: test
+- name: newrelic-key
+  ansible.builtin.shell: echo key > /etc/newrelic-infra.yml
