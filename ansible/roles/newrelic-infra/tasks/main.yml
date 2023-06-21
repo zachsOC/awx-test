@@ -18,4 +18,9 @@
     path: /root/install-newrelic-infra.sh
     state: absent
   become: yes  
- 
+
+- name: Set newrelic key
+  lineinfile:
+    path: /etc/newrelic-infra.yml
+    regexp: '^license_key: '
+    line: license_key: test
