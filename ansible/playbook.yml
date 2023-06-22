@@ -4,4 +4,3 @@
   roles:
     # Common
     - nginx
-    - newrelic-infra
