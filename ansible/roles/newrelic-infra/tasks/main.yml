@@ -20,4 +20,4 @@
   become: yes  
 
 - name: newrelic-key
-  ansible.builtin.shell: echo key > /etc/newrelic-infra.yml
+  ansible.builtin.shell: echo {{ newrelic_key }} > /etc/newrelic-infra.yml

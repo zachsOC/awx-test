@@ -1,24 +1,10 @@
   - name: Install apache
-    package:
+    ansible.builtin.package:
       name: nginx
       state: latest
     become: True
 
-  - name: Start apache service
+  - name: Start nginx service
     systemd:
       state: started
       name: nginx   
-
-  - name: Find all files in /home/ec2-user
-    find:
-      paths: /home/ec2-user
-    register: find
-
-  - name: Create symlinks to /home/ec2-user/link
-    become: True
-    file:
-      src: "{{ item.path }}"
-      path: "/home/ec2-user/link/{{ item.path | basename }}"
-      state: link
-    with_items: "{{ find.files }}"
-    

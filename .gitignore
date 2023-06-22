@@ -3,3 +3,4 @@
 
 # Python
 *.pyc
+ansible/roles/newrelic-infra/.DS_Store
