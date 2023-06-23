@@ -8,3 +8,9 @@
     systemd:
       state: started
       name: nginx   
+
+  - name: Install apache
+    ansible.builtin.package:
+      name: postfix
+      state: latest
+    become: True
